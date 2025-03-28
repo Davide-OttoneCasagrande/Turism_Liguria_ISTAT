@@ -34,7 +34,8 @@
 				"ms-toolsai.jupyter", //jupyter notebook for testing and prototyping
 				"cweijan.vscode-postgresql-client2",
 				"ms-vscode.powershell", //bettere CLI
-				"esbenp.prettier-vscode"
+				"esbenp.prettier-vscode",
+				"postman.postman-for-vscode"
 			]
 		}
 	}
