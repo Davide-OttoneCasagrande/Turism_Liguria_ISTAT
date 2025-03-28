@@ -28,7 +28,7 @@ def filter(locationID_path:str=filterLocationIdJsonPath, maxFilter:int=maxFilter
             current_filter= f"{fileData[I]}"
     return filters
 
-def filter_for_122_54(filters:list[str]) -> list[str]:
+def filter_for_122_54(filters:list[str]=filter()) -> list[str]:
     FilterString122_54:list[str] = []
     for filter in filters:
         FilterString122_54.append(f"...{filter}.......")
