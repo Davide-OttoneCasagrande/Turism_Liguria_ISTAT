@@ -2,17 +2,22 @@ import os
 import json
 
 # REST request ISTAT API data
-datatype = 0  # 0 = CSV  1 = JSON
-dataflow = '122_54'
+dataType = 0  # 0 = CSV  1 = JSON
+maxFilter = 34
 timeframe = 'startPeriod=2016-01-01'
-maxFilter = 35
-filterLocationIdJsonPath = os.path.join("data", "filter_location_id_rest_request.json")
+filterLocationIdJsonPath = os.path.join("src", "data", "filter_location_id_rest_request.json") #"src//data//filter_location_id_rest_request.json" 
+dataflows = [
+    ('122_54',"DCSC_TUR","facts_turism"),
+    ("68_357","DCCV_TURNOT_CAPI","facts_overnights"),
+    ("161_268","DCSP_SBSREG","facts_indicatori_economici")
+]
+
 
 def filter(locationID_path:str=filterLocationIdJsonPath, maxFilter:int=maxFilter)-> list[str]:
     """
     Args:
         locationID_path (str): Path to the JSON file with the structure: {"id": [i1, i2, ...]}.
-        maxFilter (int): Maximum number of filters for a single REST request (default: 35).
+        maxFilter (int): Maximum number of filters for a single REST request (default: 34).
 
     Returns:
         list[str]: A list of strings, each containing concatenated IDs in the format:
@@ -24,22 +29,18 @@ def filter(locationID_path:str=filterLocationIdJsonPath, maxFilter:int=maxFilter
     fileData= data["id"]
     
     filters:list[str] = [] 
-    current_filter =f"{fileData[0]}"
-    i: int = 1
-    for I in range(len(fileData)-1):
-        I=I+1
-        if i <= maxFilter-1:
-            current_filter= f"{current_filter}+{fileData[I]}"
-            i=i+1
-        if i==maxFilter:
-            filters.append(current_filter)
-            i=0
-            current_filter= f"{fileData[I]}"
+    i: int = 0
+
+    while i < len(fileData):
+        current_slice = fileData[i:i+maxFilter]
+        filters.append("+".join(current_slice))
+        i+= maxFilter
     return filters
 
-def filter_for_122_54(filters:list[str]=filter()) -> list[str]:
+def get_filter_for_dataflow(dataflow:str, filters:list[str]=filter()) -> list[str]:
     """
     Args:
+        dataflow (str): The dataflow identifier.
         filters (list[str]): A list of filter strings, each containing concatenated IDs
                              in the format "i1+i2+...+in", suitable for REST requests.
 
@@ -48,10 +49,20 @@ def filter_for_122_54(filters:list[str]=filter()) -> list[str]:
                    where each string is wrapped with additional characters for the request.
     """
 
-    FilterString122_54:list[str] = []
-    for filter in filters:
-        FilterString122_54.append(f"...{filter}.......")
-    return FilterString122_54
+    FilterString:list[str] = []
+    
+    if dataflow == "122_54":
+        for filter in filters:
+            FilterString.append(f".{filter}.........")
+    elif dataflow == "68_357":
+        for filter in filters:
+            FilterString.append(f"...{filter}.............")
+    elif dataflow == "161_268":
+        for filter in filters:
+            FilterString.append(f".{filter}.........")
+    else:
+        raise ValueError(f"Unknown dataflow: {dataflow}. Please check the dataflow ID.")
+    return FilterString
 
 if __name__ == '__main__':
     filterData: list[str] = filter()
