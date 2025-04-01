@@ -1,0 +1,654 @@
+{
+  "meta": {
+    "id": "IREF541809",
+    "test": false,
+    "schema": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+    "prepared": "2025-03-30T19:03:02Z",
+    "contentLanguages": ["en"],
+    "sender": {
+      "id": "FusionRegistry"
+    }
+  },
+  "data": {
+    "dataStructures": [
+      {
+        "links": [
+          {
+            "rel": "self",
+            "type": "datastructure",
+            "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+            "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataStructure=IT1:DCSC_TUR(1.0)"
+          }
+        ],
+        "id": "DCSC_TUR",
+        "annotations": [
+          {
+            "id": "BL_DCSC_TUR_F05726EDC4",
+            "title": "F05726EDC4A4D451C11464DDE5B0C1CC",
+            "type": "AssociatedCube"
+          }
+        ],
+        "name": "Capacity of collective accommodation establishments and Occupancy in collective accommodation establishments",
+        "names": {
+          "en": "Capacity of collective accommodation establishments and Occupancy in collective accommodation establishments",
+          "it": "Capacità degli esercizi ricettivi e Movimento dei clienti negli esercizi ricettivi"
+        },
+        "version": "1.0",
+        "agencyID": "IT1",
+        "isExternalReference": false,
+        "validFrom": "2018-06-08T00:00:00",
+        "dataStructureComponents": {
+          "attributeList": {
+            "links": [
+              {
+                "rel": "self",
+                "type": "attributedescriptor",
+                "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.AttributeDescriptor=IT1:DCSC_TUR(1.0).AttributeDescriptor"
+              }
+            ],
+            "id": "AttributeDescriptor",
+            "attributes": [
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "observation": {}
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).OBS_STATUS"
+                  }
+                ],
+                "id": "OBS_STATUS",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_FLAG(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).OBS_STATUS"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dataflow": {}
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_DS"
+                  }
+                ],
+                "id": "NOTE_DS",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_DS_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).NOTE_DS"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["REF_AREA"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_REF_AREA"
+                  }
+                ],
+                "id": "NOTE_REF_AREA",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).NOTE_REF_AREA"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["DATA_TYPE"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_DATA_TYPE"
+                  }
+                ],
+                "id": "NOTE_DATA_TYPE",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_DATA_TYPE"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["ADJUSTMENT"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_ADJUSTMENT"
+                  }
+                ],
+                "id": "NOTE_ADJUSTMENT",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).NOTE_ADJUSTMENT"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["TYPE_ACCOMMODATION"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_TYPE_ACCOMMODATION"
+                  }
+                ],
+                "id": "NOTE_TYPE_ACCOMMODATION",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_TYPE_ACCOMMODATION"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["ECON_ACTIVITY_NACE_2007"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_ECON_ACTIVITY_NACE_2007"
+                  }
+                ],
+                "id": "NOTE_ECON_ACTIVITY_NACE_2007",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_ECON_ACTIVITY_NACE_2007"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["COUNTRY_RES_GUESTS"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_COUNTRY_RES_GUESTS"
+                  }
+                ],
+                "id": "NOTE_COUNTRY_RES_GUESTS",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_COUNTRY_RES_GUESTS"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["LOCALITY_TYPE"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_LOCALITY_TYPE"
+                  }
+                ],
+                "id": "NOTE_LOCALITY_TYPE",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_LOCALITY_TYPE"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["URBANIZ_DEGREE"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_URBANIZ_DEGREE"
+                  }
+                ],
+                "id": "NOTE_URBANIZ_DEGREE",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_URBANIZ_DEGREE"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["COASTAL_AREA"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_COASTAL_AREA"
+                  }
+                ],
+                "id": "NOTE_COASTAL_AREA",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_COASTAL_AREA"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["SIZE_BY_NUMBER_ROOMS"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_SIZE_BY_NUMBER_ROOMS"
+                  }
+                ],
+                "id": "NOTE_SIZE_BY_NUMBER_ROOMS",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).NOTE_SIZE_BY_NUMBER_ROOMS"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["TIME_PERIOD"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).NOTE_TIME_PERIOD"
+                  }
+                ],
+                "id": "NOTE_TIME_PERIOD",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_SERVICE_NOTE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).NOTE_TIME_PERIOD"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["DATA_TYPE"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).BASE_PER"
+                  }
+                ],
+                "id": "BASE_PER",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_BASE_YEAR(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).BASE_PER"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["DATA_TYPE"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).UNIT_MEAS"
+                  }
+                ],
+                "id": "UNIT_MEAS",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_UNIT_MEASURE(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).UNIT_MEAS"
+              },
+              {
+                "usage": "optional",
+                "attributeRelationship": {
+                  "dimensions": ["DATA_TYPE"]
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dataattribute",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=IT1:DCSC_TUR(1.0).UNIT_MULT"
+                  }
+                ],
+                "id": "UNIT_MULT",
+                "localRepresentation": {
+                  "enumerationFormat": {
+                    "textType": "String"
+                  },
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_UNIT_MULT(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).UNIT_MULT"
+              }
+            ]
+          },
+          "dimensionList": {
+            "links": [
+              {
+                "rel": "self",
+                "type": "dimensiondescriptor",
+                "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.DimensionDescriptor=IT1:DCSC_TUR(1.0).DimensionDescriptor"
+              }
+            ],
+            "id": "DimensionDescriptor",
+            "dimensions": [
+              {
+                "position": 1,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).FREQ"
+                  }
+                ],
+                "id": "FREQ",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_FREQ(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).FREQ"
+              },
+              {
+                "position": 2,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).REF_AREA"
+                  }
+                ],
+                "id": "REF_AREA",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_ITTER107(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).REF_AREA"
+              },
+              {
+                "position": 3,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).DATA_TYPE"
+                  }
+                ],
+                "id": "DATA_TYPE",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_TIPO_DATO7(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).DATA_TYPE"
+              },
+              {
+                "position": 4,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).ADJUSTMENT"
+                  }
+                ],
+                "id": "ADJUSTMENT",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_CORREZ(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).ADJUSTMENT"
+              },
+              {
+                "position": 5,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).TYPE_ACCOMMODATION"
+                  }
+                ],
+                "id": "TYPE_ACCOMMODATION",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_TIPO_ALLOGGIO2(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).TYPE_ACCOMMODATION"
+              },
+              {
+                "position": 6,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).ECON_ACTIVITY_NACE_2007"
+                  }
+                ],
+                "id": "ECON_ACTIVITY_NACE_2007",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_ATECO_2007(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).ECON_ACTIVITY_NACE_2007"
+              },
+              {
+                "position": 7,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).COUNTRY_RES_GUESTS"
+                  }
+                ],
+                "id": "COUNTRY_RES_GUESTS",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_ISO(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).COUNTRY_RES_GUESTS"
+              },
+              {
+                "position": 8,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).LOCALITY_TYPE"
+                  }
+                ],
+                "id": "LOCALITY_TYPE",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_TIPOITTER1(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).LOCALITY_TYPE"
+              },
+              {
+                "position": 9,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).URBANIZ_DEGREE"
+                  }
+                ],
+                "id": "URBANIZ_DEGREE",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_TIPOITTER1(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).URBANIZ_DEGREE"
+              },
+              {
+                "position": 10,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).COASTAL_AREA"
+                  }
+                ],
+                "id": "COASTAL_AREA",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_TIPOITTER1(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).COASTAL_AREA"
+              },
+              {
+                "position": 11,
+                "type": "Dimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "dimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IT1:DCSC_TUR(1.0).SIZE_BY_NUMBER_ROOMS"
+                  }
+                ],
+                "id": "SIZE_BY_NUMBER_ROOMS",
+                "localRepresentation": {
+                  "enumeration": "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IT1:CL_NUMEROSITA(1.0)"
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:SERVICE_DOMAIN(1.0).SIZE_BY_NUMBER_ROOMS"
+              }
+            ],
+            "timeDimensions": [
+              {
+                "position": 12,
+                "type": "TimeDimension",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "timedimension",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.TimeDimension=IT1:DCSC_TUR(1.0).TIME_PERIOD"
+                  }
+                ],
+                "id": "TIME_PERIOD",
+                "localRepresentation": {
+                  "format": {
+                    "textType": "ObservationalTimePeriod"
+                  }
+                },
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).TIME_PERIOD"
+              }
+            ]
+          },
+          "measureList": {
+            "links": [
+              {
+                "rel": "self",
+                "type": "measuredescriptor",
+                "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.MeasureDescriptor=IT1:DCSC_TUR(1.0).MeasureDescriptor"
+              }
+            ],
+            "id": "MeasureDescriptor",
+            "measures": [
+              {
+                "usage": "optional",
+                "links": [
+                  {
+                    "rel": "self",
+                    "type": "measure",
+                    "uri": "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/develop/structure-message/tools/schemas/2.0.0/sdmx-json-structure-schema.json",
+                    "urn": "urn:sdmx:org.sdmx.infomodel.datastructure.Measure=IT1:DCSC_TUR(1.0).OBS_VALUE"
+                  }
+                ],
+                "id": "OBS_VALUE",
+                "conceptIdentity": "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IT1:CROSS_DOMAIN(1.0).OBS_VALUE"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
