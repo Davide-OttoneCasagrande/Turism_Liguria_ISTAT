@@ -36,7 +36,8 @@
 				"ms-vscode.powershell", //bettere CLI
 				"valiantsin.operatormonodarktheme", //better theme
 				"esbenp.prettier-vscode",
-				"postman.postman-for-vscode"
+				"postman.postman-for-vscode",
+				"usernamehw.errorlens" //Improve highlighting of errors, warnings and other language diagnostics.
 			]
 		}
 	}
