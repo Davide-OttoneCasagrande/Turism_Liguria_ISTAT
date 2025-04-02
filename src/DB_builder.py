@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import psycopg2
 import REST_handler as H_Rest
+import ISTAT_API_Request_data as ISTAT_var
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 load_dotenv()
@@ -48,6 +49,8 @@ def db_execute_SQL_Query(sql_query:str):
         Args:
             sql_query (str): SQL statement.
     """
+    print(f"quering DB ... \n{sql_query}")
+
     conn: psycopg2.extensions.connection = psycopg2.connect(
         dbname=os.getenv('database'),
         user=os.getenv('User'),
@@ -79,23 +82,27 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]: #ToDo t
     dataflowID, datastructureID, tableName = dataflow
 
     df = H_Rest.get_dataflow(dataflowID)
-    empty_Columns = df.columns[df.isna().all()].tolist()
+    deleted_Columns = df.columns[df.isna().all()].tolist()
     df = df.dropna(axis=1, how='all')
+    constant_columns = df.columns[df.nunique() == 1].tolist()
+    deleted_Columns.extend(constant_columns)
+    df = df.drop(columns=constant_columns)
 
+    print(f"uploading to db: {dataflow}")
     df.to_sql(tableName, get_engine(), if_exists='replace', index=False)
 
-    structure =pd.json_normalize(H_Rest.get_dataStructure(datastructureID))
-    structure.columns = ['columns', 'codeList']
+    structure =H_Rest.get_dataStructure(datastructureID)
     print(structure)
 
     SQL_fKey_script=f"ALTER TABLE public.\"{tableName}\"\n"
     constraint_parts = []
 
     for codelist in structure['codeList']:
-        if codelist not in empty_Columns:
+        if codelist not in deleted_Columns:
             constraint_parts.append(add_constraint(tableName,structure['columns'],codelist))
             if codelist not in ignoreCL:
-                df_dimension=H_Rest.get_codelist(codelist)
+                df_dimension=H_Rest.get_codelist(codelist)               
+                print(f"uploading to db: {dataflow}")
                 df_dimension.to_sql(codelist, get_engine(), if_exists='replace', index=True)
                 ignoreCL.append(codelist)
 
@@ -109,3 +116,10 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]: #ToDo t
         
     db_execute_SQL_Query(SQL_fKey_script)
     return ignoreCL
+
+def build_location_Hierarcy(): #TODO implement this
+
+    return
+
+if __name__ == "__main__":
+    db_star_schema(ISTAT_var.dataflows[0])

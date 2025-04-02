@@ -28,13 +28,16 @@ def get_dataflow(dataflow:str, timeframe:str=timeframe) -> pd.DataFrame:
     """
     filters = API_ISTAT.get_filter_for_dataflow(dataflow)
     dfs = []
+
+    print(f"downloading dataflow: {dataflow}")
+
     for filterID in filters:
         url =  f'https://esploradati.istat.it/SDMXWS/rest/data/{dataflow}/{filterID}?{timeframe}'
 
         try:
-            response = req.get(url, headers=headerCSV, timeout=20)
+            response = req.get(url, headers=headerCSV, timeout=90)
             response.raise_for_status()
-            df= pd.read_csv(io.StringIO(response.text), sep=';')
+            df= pd.read_csv(io.StringIO(response.text))
             dfs.append(df)
         except req.exceptions.HTTPError as e:
             if response.status_code == 404: # Log the 404 error
@@ -58,7 +61,11 @@ def get_codelist(codeListName:str) -> pd.DataFrame:
         Returns:
             pd.DataFrame: A DataFrame containing the codelist.
     """
-    url = f'https://esploradati.istat.it/SDMXWS/rest/codelist/{codeListName}'
+
+    url = f'https://esploradati.istat.it/SDMXWS/rest/codelist/IT1/{codeListName}'
+
+    print(f"downloading codelist: {codeListName}")
+
     try:
         response = req.get(url, headers=headerJSON, timeout=20)
         response.raise_for_status()
@@ -67,7 +74,7 @@ def get_codelist(codeListName:str) -> pd.DataFrame:
         raise RuntimeError(f"Request failed for codelist: {e}")
 
 
-def get_dataStructure(dataflowID:str) -> json:
+def get_dataStructure(dataflowID:str) -> pd.DataFrame:
     """
         Fetches and parses the data structure for a given dataflow ID from the ISTAT SDMX web service.
 
@@ -75,7 +82,8 @@ def get_dataStructure(dataflowID:str) -> json:
             dataflowID (str): The identifier of the dataflow for which the data structure is to be retrieved.
 
         Returns:
-            dict: A dictionary mapping dimension IDs to their corresponding codelist IDs. If an error occurs, an empty dictionary is returned.
+            pd.DataFrame: A DataFrame with dimension IDs ('columns') and their corresponding codelist IDs ('codeList').
+                         Returns an empty DataFrame if an error occurs.
 
         Raises:
             requests.exceptions.RequestException: If there is an issue with the HTTP request.
@@ -83,9 +91,13 @@ def get_dataStructure(dataflowID:str) -> json:
 
         Example:
             >>> get_dataStructure('exampleDataflowID')
-            {'DIM1': 'CL_DIM1', 'DIM2': 'CL_DIM2'}
+               columns   codeList
+            0    DIM1    CL_DIM1
+            1    DIM2    CL_DIM2
     """
+    print(f"downloading datastructure: {dataflowID}")
     urlDatastructure:str = f'https://esploradati.istat.it/SDMXWS/rest/datastructure/IT1/{dataflowID}'
+
     try:
         structureResponse = req.get(urlDatastructure, timeout=20)
         structureResponse.raise_for_status()
@@ -96,42 +108,30 @@ def get_dataStructure(dataflowID:str) -> json:
             'common': "http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
         }
 
-        dimension_codelist_map = {}
-        
+        dimension_ids = []
+        codelist_ids = []
+
         for dimension in structureXML.findall('.//structure:Dimension', namespaces):
             dim_id = dimension.get('id')
             enumeration = dimension.find('./structure:LocalRepresentation/structure:Enumeration/Ref', namespaces)
             
             if enumeration is not None:
-                dimension_codelist_map[dim_id] = enumeration.get('id')
-        
-        return dimension_codelist_map
+                codelist_id = enumeration.get('id')
+                dimension_ids.append(dim_id)
+                codelist_ids.append(codelist_id)
+
+        structure = pd.DataFrame({
+            'columns': dimension_ids,
+            'codeList': codelist_ids
+        })
+          
+        return structure
     except Exception as e:
         print(f"Error retrieving data structure: {e}")
-        return {}
- 
-    
+        return pd.DataFrame(columns=['columns', 'codeList'])
+
 
 if __name__ == '__main__':
     #dataframe = get_dataflow(filters_122_54, dataflow=dataflows[0][0])
     cd = get_dataStructure(dataflows[0][1])
     print(cd)
-
-'''
-    Accedere ai metadati
-
-Questa è la struttura dell'URL per accedere ai metadati:
-
-http://sdmx.istat.it/SDMXWS/rest/resource/agencyID/resourceID/version/itemID?queryStringParameters
-
-Alcune note:
-
-    resource (obbligatorio), la risorsa che si vuole interrogare (tra queste categorisation, categoryscheme, codelist, conceptscheme, contentconstraint, dataflow e datastructure);
-    agencyID, l'identiticativo dell'agenzia che esponi i dati (qui è IT1);
-    resourceID, l'ID della risorsa che si vuole interrogare (successivamente qualche esempio);
-    version, la versione dell'artefatto che si vuole interrogare;
-    itemID, l'ID dell'elemento (per schemi di elementi) o della gerarchia (per elenchi di codici gerarchici) da restituire;
-    queryStringParameters
-        detail, la quantità desiderata di informazioni. I valori possibili sono allstubs, referencestubs, allcompletestubs, referencecompletestubs, referencepartial e full e di default è full. di riferimento parziale, completo.
-        references, riferimenti relativi da restituire. I valori possibili sono none, parents, parentsandsiblings, children, descendants, all, any e di default è none.
-'''
