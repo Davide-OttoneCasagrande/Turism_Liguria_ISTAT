@@ -3,7 +3,7 @@ import json
 
 # REST request ISTAT API data
 dataType = 0  # 0 = CSV  1 = JSON
-maxFilter = 34
+maxFilter = 18
 timeframe = 'startPeriod=2016-01-01'
 filterLocationIdJsonPath = os.path.join("src", "data", "filter_location_id_rest_request.json") #"src//data//filter_location_id_rest_request.json" 
 dataflows = [
