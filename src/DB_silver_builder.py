@@ -28,6 +28,48 @@ def sql_query_from_file(sql_filePath) -> pd.DataFrame:
         sql_query = file.read()
     df=bronze.db_execute_SQL_Query(sql_query)
     return df
+def db_execute_SQL_Query(sql_query: str):
+    """
+    Execute SQL query and return results.
+    
+    Args:
+        sql_query (str): SQL statement.
+        
+    Returns:
+        pandas.DataFrame: Query results as a DataFrame for SELECT queries, 
+                          or None for non-SELECT queries.
+    """
+    print(f"querying DB ... \n{sql_query}")
+    
+    conn = None
+    cursor = None
+    df = None
+    
+    try:
+        conn = bronze.get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql_query)
+        
+        if sql_query.strip().upper().startswith('SELECT'):
+            #results = cursor.fetchall()
+            df = pd.read_sql(sql_query, conn)
+        else:
+            conn.commit()
+
+        return df
+        
+    except Exception as e:
+        print(f"Database error: {e}")
+        if conn:
+            conn.rollback()
+        raise
+        
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 
 
 def assign_data(df: pd.DataFrame, filter_condition: bool, id_column: str, columns_to_assign: dict) -> pd.DataFrame:
@@ -91,4 +133,8 @@ def build_location_Hierarcy(pathSQL_request: str) -> None:
     df = process_geographic_hierarchy(df,searchId)
     
     print(f"Processed {df['parentId'].notna().sum()} entry")   # Print summary
-    bronze.save_to_db(df, "dim_location_Hierarcy")
+    bronze.save_to_db(df, "dim_location_Hierarcy",False)
+
+if __name__ == "__main__":
+    SQL_FilePath = "src\\data\\select_location_hierarchy.sql"
+    build_location_Hierarcy(SQL_FilePath)
