@@ -19,7 +19,7 @@ This project focuses on the development of a **Power BI dashboard** and a **pres
   - **Dataflows:**
       - "122_54": "Capacity of collective accommodation establishments and Occupancy in collective accommodation establishments",
       - "68_357": "Pernottamenti  in viaggio",
-      -"161_268": "Risultati economici delle imprese - reg.".
+      - "161_268": "Risultati economici delle imprese - reg.".
 
 ## Deliverables
 1. **Power BI Dashboard**:  
