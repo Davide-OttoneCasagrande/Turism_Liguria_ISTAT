@@ -1,46 +1,44 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/anaconda
 {
-	"name": "Anaconda (Python 3)",
-	"build": {
-		"context": "..",
-		"dockerfile": "Dockerfile"
-	},
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [
-		5432
-	],
-	// Use 'postCreateCommand' to run commands after the container is created.
-	//"postCreateCommand": ["python --version"],
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"dotjoshjohnson.xml", //XML tools
-				"ms-toolsai.datawrangler",
-				"cweijan.dbclient-jdbc",
-				"hediet.debug-visualizer",
-				"ms-azuretools.vscode-docker",
-				"mechatroner.rainbow-csv",
-				"janisdd.vscode-edit-csv",
-				"irongeek.vscode-env",
-				"mhutchie.git-graph",
-				"eamodio.gitlens",
-				"wix.vscode-import-cost", //import cost of the packages-libreary can be eliminated
-				"visualstudioexptteam.vscodeintellicode",
-				"visualstudioexptteam.intellicode-api-usage-examples",
-				"ms-toolsai.jupyter", //jupyter notebook for testing and prototyping
-				"cweijan.vscode-postgresql-client2",
-				"ms-vscode.powershell", //bettere CLI
-				"valiantsin.operatormonodarktheme", //better theme
-				"esbenp.prettier-vscode",
-				"postman.postman-for-vscode",
-				"usernamehw.errorlens" //Improve highlighting of errors, warnings and other language diagnostics.
-			]
-		}
-	}
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+  "name": "Anaconda (Python 3)",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  // "features": {},
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  "forwardPorts": [5432],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  //"postCreateCommand": ["python --version"],
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dotjoshjohnson.xml", //XML tools
+        "ms-toolsai.datawrangler",
+        "cweijan.dbclient-jdbc",
+        "hediet.debug-visualizer", //debugger visualizer
+        "ms-azuretools.vscode-docker",
+        "mechatroner.rainbow-csv",
+        "janisdd.vscode-edit-csv",
+        "irongeek.vscode-env",
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "wix.vscode-import-cost", //import cost of the packages-libreary can be eliminated
+        "visualstudioexptteam.vscodeintellicode",
+        "visualstudioexptteam.intellicode-api-usage-examples",
+        "ms-toolsai.jupyter", //jupyter notebook for testing and prototyping
+        "cweijan.vscode-postgresql-client2", //PostgreSQL client
+        "ms-vscode.powershell", //bettere CLI
+        "valiantsin.operatormonodarktheme", //better theme
+        "esbenp.prettier-vscode",
+        "postman.postman-for-vscode",
+        "usernamehw.errorlens" //Improve highlighting of errors, warnings and other language diagnostics.
+      ]
+    }
+  }
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
 }
