@@ -66,7 +66,7 @@ def db_insert_dim(datastructureID:str, ignoreCL:list[str]=None)->tuple:
     return ignoreCL,structure
 
 
-def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]: #ToDo test this
+def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]:
     """
         Create a star schema database structure for ISTAT data.
         
@@ -86,7 +86,16 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]: #ToDo t
     return ignoreCL
 
 
+
+def insert_location_Hierarcy(dfLocationFilterCodeList:pd.DataFrame) -> str:
+    print(f"Processed {dfLocationFilterCodeList['parentId'].notna().sum()} entry")   # Print summary
+    save_to_db(dfLocationFilterCodeList, "dim_location_Hierarcy",False)
+    return  "CL_ITTER107"
+
+
 if __name__ == "__main__":
     ignoreCL:list[str] = []
+    fstCL = ISTAT_var.process_geographic_hierarchy(H_Rest.get_codelist("CL_ITTER107"))
+    ignoreCL.append(insert_location_Hierarcy(fstCL))
     for dataflow in ISTAT_var.dataflows:
         ignoreCL=db_star_schema(dataflow,ignoreCL)
