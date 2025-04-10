@@ -2,18 +2,15 @@ import requests as req
 import pandas as pd
 import io
 import xml.etree.ElementTree as ET
-import ISTAT_API_Request_data as API_ISTAT
+#import ISTAT_API_Request_data as API_ISTAT
 from dotenv import load_dotenv
 load_dotenv()
 
-dataTyPe = API_ISTAT.dataType
-dataflows = API_ISTAT.dataflows
-timeframe = API_ISTAT.timeframe
 headerCSV = {'Accept': 'text/csv'}
 headerJSON = {'Accept': 'application/json'}
 
 
-def get_dataflow(dataflow:str, timeframe:str=timeframe) -> pd.DataFrame:
+def get_dataflow(dataflow:str, filters:list[str], timeframe:str) -> pd.DataFrame:
     """
         Fetch data from the ISTAT API.
 
@@ -24,7 +21,6 @@ def get_dataflow(dataflow:str, timeframe:str=timeframe) -> pd.DataFrame:
         Returns:
             pd.DataFrame: A DataFrame containing the fetched data.
     """
-    filters = API_ISTAT.get_filter_for_dataflow(dataflow)
     dfs = []
 
     print(f"downloading dataflow: {dataflow}")
@@ -168,5 +164,5 @@ def get_dataStructure(dataflowID:str) -> pd.DataFrame:
 
 if __name__ == '__main__':
     #dataframe = get_dataflow(filters_122_54, dataflow=dataflows[0][0])
-    cd = get_dataStructure(dataflows[0][1])
+    cd = get_dataStructure("CL_ITTER107")
     print(cd)

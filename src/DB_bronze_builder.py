@@ -1,6 +1,6 @@
 import pandas as pd
 import psycopg2
-import REST_handler as H_Rest
+import REST_handler as RestH
 import ISTAT_API_Request_data as ISTAT_var
 from dotenv import load_dotenv
 from os import getenv
@@ -41,7 +41,7 @@ def save_to_db(df: pd.DataFrame, table_name: str, intIndex: bool=True) -> None:
 
 
 def db_insert_fact(dataflowID:str,tableName:str)->list[str]:
-    df = H_Rest.get_dataflow(dataflowID)
+    df = RestH.get_dataflow(dataflowID)
     deleted_Columns = df.columns[df.isna().all()].tolist()
     df = df.dropna(axis=1, how='all')
     constant_columns = df.columns[df.nunique() == 1].tolist()
@@ -55,11 +55,11 @@ def db_insert_fact(dataflowID:str,tableName:str)->list[str]:
 def db_insert_dim(datastructureID:str, ignoreCL:list[str]=None)->tuple:
     if ignoreCL is None:
         ignoreCL = []
-    structure =H_Rest.get_dataStructure(datastructureID)
+    structure =RestH.get_dataStructure(datastructureID)
     for index, row in structure.iterrows():
         codelist = row['codeList'].upper()
         if codelist not in ignoreCL:
-            df_dimension=H_Rest.get_codelist(codelist)               
+            df_dimension=RestH.get_codelist(codelist)               
             print(f"uploading to db: {codelist}")
             save_to_db(df_dimension,codelist)
             ignoreCL.append(codelist)
@@ -95,7 +95,7 @@ def insert_location_Hierarcy(dfLocationFilterCodeList:pd.DataFrame) -> str:
 
 if __name__ == "__main__":
     ignoreCL:list[str] = []
-    fstCL = ISTAT_var.process_geographic_hierarchy(H_Rest.get_codelist("CL_ITTER107"))
+    fstCL = ISTAT_var.process_geographic_hierarchy(RestH.get_codelist("CL_ITTER107"))
     ignoreCL.append(insert_location_Hierarcy(fstCL))
     for dataflow in ISTAT_var.dataflows:
         ignoreCL=db_star_schema(dataflow,ignoreCL)

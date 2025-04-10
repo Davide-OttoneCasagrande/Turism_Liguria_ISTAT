@@ -1,0 +1,83 @@
+i have this pd dataframe:
+columns codelist
+col1    cl_1
+col2    cl_2
+col3    cl_3
+
+i need to do this:
+for index, row in structure.iterrows():
+        codelist = row['codeList']
+        column_name = row['columns']    
+        constraint_parts.append(add_constraint(column_name,codelist))           
+
+    if constraint_parts:
+        # Join all parts and remove the trailing comma
+        sql_constraints = ''.join(constraint_parts)
+        sql_constraints = sql_constraints.rstrip(',\n') + ";"
+
+
+dataTyPe = API_ISTAT.dataType
+dataflows = API_ISTAT.dataflows
+timeframe = API_ISTAT.timeframe
+
+filters = API_ISTAT.get_filter_for_dataflow(dataflow)
+
+
+def process_geographic_hierarchy(codelist_name: str = originFilterSTR, search_id: str = searchId) -> pd.DataFrame:
+    df = Rest_H.get_codelist(codelist_name)
+    hierarchy_df = pd.DataFrame(columns=['id', 'parent_id', 'nome', 'name'])
+    
+    # Helper function to add rows to the DataFrame
+    def add_row(row_id, parent_id, row_nome, row_name):
+        nonlocal hierarchy_df
+        new_row = pd.DataFrame({
+            'id': [row_id],
+            'parent_id': [parent_id],
+            'nome': [row_nome],
+            'name': [row_name]
+        })
+        return pd.concat([hierarchy_df, new_row], ignore_index=True)
+    
+    # Process regions
+    region_rows = df.loc[(df['id'].str.len() == regionId_Length) & 
+                         (df['id'].str.startswith(search_id))]
+    
+    for _, region_row in region_rows.iterrows():
+        region_id = region_row['id']
+        # Add region to hierarchy
+        hierarchy_df = add_row(region_id, None, region_row['nome'], region_row['name'])
+        
+        # Process provinces for this region
+        province_rows = df.loc[(df['id'].str.len() == provinceId_length) & 
+                              (df['id'].str.startswith(region_id))]
+        
+        for _, province_row in province_rows.iterrows():
+            province_id = province_row['id']
+            province_name = province_row['name']
+            # Add province to hierarchy
+            hierarchy_df = add_row(province_id, region_id, province_row['nome'], province_name)
+            
+            # Find a commune for this province to get its code
+            sample_communes = df.loc[(df['nome'] == province_name) & 
+                                    (df['id'].str.isdigit()) & 
+                                    (df['id'].str.len() == communeId_lenght)]
+            
+            if not sample_communes.empty:
+                # Get province code from commune
+                province_code = sample_communes.iloc[0]['id'][:3]
+                
+                # Find all communes with this province code
+                commune_rows = df.loc[df['id'].str.startswith(province_code) & 
+                                     (df['id'].str.isdigit()) &
+                                     (df['id'].str.len() == communeId_lenght)]
+                
+                # Add communes to hierarchy
+                for _, commune_row in commune_rows.iterrows():
+                    hierarchy_df = add_row(
+                        commune_row['id'], 
+                        province_id, 
+                        commune_row['nome'], 
+                        commune_row['name']
+                    )
+                    
+    return hierarchy_df
