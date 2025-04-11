@@ -40,8 +40,8 @@ def save_to_db(df: pd.DataFrame, table_name: str, intIndex: bool=True) -> None:
         conn.close()
 
 
-def db_insert_fact(dataflowID:str,tableName:str)->list[str]:
-    df = RestH.get_dataflow(dataflowID)
+def db_insert_fact(dataflowID:str,tableName:str,filters:list[str])->list[str]:
+    df = RestH.get_dataflow(dataflowID,filters,ISTAT_var.timeframe)
     deleted_Columns = df.columns[df.isna().all()].tolist()
     df = df.dropna(axis=1, how='all')
     constant_columns = df.columns[df.nunique() == 1].tolist()
@@ -78,7 +78,13 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]:
             list: Updated list of codelists to ignore.
     """
     dataflowID, datastructureID, tableName = dataflow
-    deleted_Columns = db_insert_fact(dataflowID,tableName)
+    location_struct = ISTAT_var.filter()
+    filters, dim_geography = location_struct
+    if ISTAT_var.originFilterSTR not in ignoreCL:
+        ignoreCL.append(ISTAT_var.originFilterSTR)
+        save_to_db(dim_geography,'CL_LOCATION_HIERARCHY')
+    filters_for_fact = ISTAT_var.get_filter_for_dataflow(dataflowID,filters)
+    deleted_Columns = db_insert_fact(dataflowID,tableName,filters_for_fact)
     ignoreCL.append(deleted_Columns)
     structure=db_insert_dim(datastructureID,ignoreCL)
     print(structure[1])
@@ -86,16 +92,8 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]:
     return ignoreCL
 
 
-
-def insert_location_Hierarcy(dfLocationFilterCodeList:pd.DataFrame) -> str:
-    print(f"Processed {dfLocationFilterCodeList['parentId'].notna().sum()} entry")   # Print summary
-    save_to_db(dfLocationFilterCodeList, "dim_location_Hierarcy",False)
-    return  "CL_ITTER107"
-
-
 if __name__ == "__main__":
     ignoreCL:list[str] = []
-    fstCL = ISTAT_var.process_geographic_hierarchy(RestH.get_codelist("CL_ITTER107"))
-    ignoreCL.append(insert_location_Hierarcy(fstCL))
     for dataflow in ISTAT_var.dataflows:
-        ignoreCL=db_star_schema(dataflow,ignoreCL)
+        ignoreCL = db_star_schema(dataflow,ignoreCL)
+    print("star schema created")
