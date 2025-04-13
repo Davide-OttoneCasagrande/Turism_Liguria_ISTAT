@@ -1,86 +1,99 @@
-import os
 import pandas as pd
+import global_VAR as gVAR
 import REST_handler as Rest_H
 
-# REST request ISTAT API data
-dataType = 0  # 0 = CSV  1 = JSON
-maxFilter = 18
-timeframe = 'startPeriod=2016-01-01'
-searchId:str = "ITC3" #codice per la liguria
-originFilterSTR:str = "CL_ITTER107"
-regionId_Length:int = 4
-provinceId_length:int = 5
-communeId_lenght:int = 6
-dataflows = [
-    ('122_54',"DCSC_TUR","facts_turism"),
-    ("161_268","DCSP_SBSREG","facts_indicatori_economici")
-]
 
-
-def assign_data(df: pd.DataFrame, id:str, parent_id:str, nome:str,name:str) -> pd.DataFrame:
-    row = pd.DataFrame({
-            'id': id,
-            'parent_id': parent_id,
-            'nome': nome,
-            'name': name
-        }, index=[0])
-    df = pd.concat([df, row], ignore_index=False)
-    return df
-
-
-def process_geographic_hierarchy(CodelistName:str = originFilterSTR, searchId: str=searchId) -> pd.DataFrame:
-
-    df = Rest_H.get_codelist(CodelistName) 
-    Hierarcy_df = pd.DataFrame(columns=['id', 'parent_id', 'nome', 'name'])
+def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, searchId: str = gVAR.searchId) -> pd.DataFrame:
+    """
+    Processes geographic data to create a hierarchical structure of regions, provinces, and communes.
+    Uses a REST API to fetch geographic data and organizes it into a hierarchy where:
+    - Regions are top-level entities
+    - Provinces belong to regions
+    - Communes belong to provinces
     
-    province_code_mapping = {}  # Create a mapping of province IDs to their numeric codes
+    Args:
+        CodelistName (str): The name of the codelist to retrieve from the REST API
+                        (default: value from global_VAR.originFilterSTR)
+        searchId (str): The ID prefix to filter regions by 
+                    (default: value from global_VAR.searchId)
+    
+    Returns:
+        pd.DataFrame: A DataFrame containing hierarchical geographic data with columns:
+                    'id', 'parent_id', 'nome' (Italian name), and 'name' (English name)
+    """
+
+    df = Rest_H.get_codelist(CodelistName)
+    hierarchy_data = []
     
     # Step 1: Process regions
-    region_rows = df.loc[(df['id'].str.len() == regionId_Length) & 
+    region_rows = df.loc[(df['id'].str.len() == gVAR.regionId_Length) & 
                          (df['id'].str.startswith(searchId))]
     for _, region_row in region_rows.iterrows():
         region_id:str = region_row['id']
-        # compile Hierarcy_df with the region
-        Hierarcy_df = assign_data(Hierarcy_df, region_id, "", region_row['nome'], region_row['name'])
+        # compile Hierarcy_data with the region
+        hierarchy_data.append({
+            'id': region_id,
+            'parent_id': '',
+            'nome': region_row['nome'],
+            'name': region_row['name']
+        })
 
         # Step 2: Process provinces
-        province_rows = df.loc[(df['id'].str.len() == provinceId_length) & 
+        province_rows = df.loc[(df['id'].str.len() == gVAR.provinceId_length) & 
                               (df['id'].str.startswith(region_id))]        
         for _, province_row in province_rows.iterrows():
             province_id = province_row['id']
             province_IT_name = province_row['nome']
-            # compile Hierarcy_df with the province
-            Hierarcy_df = assign_data(Hierarcy_df, province_id, region_id, province_IT_name, province_row['name'])
+            # compile Hierarcy_data with the provinces
+            hierarchy_data.append({
+                'id': province_id,
+                'parent_id': region_id,
+                'nome': province_IT_name,
+                'name': province_row['name']
+            })
             
-            # Step 2: Process communes
+            # Step 3: Process communes
             # Find a commune that belongs to this province to get its code
             sample_communes = df.loc[(df['nome'] == province_IT_name) & 
                                     (df['id'].str.isdigit()) & 
-                                    (df['id'].str.len() == communeId_lenght)]
+                                    (df['id'].str.len() == gVAR.communeId_lenght)]
             if not sample_communes.empty:
                 # Get the first 3 digits of the commune code
                 province_code = sample_communes.iloc[0]['id'][:3]
-                province_code_mapping[province_id] = province_code
                 # Find all communes with this province code
                 commune_rows = df.loc[df['id'].str.startswith(province_code) & 
                                      (df['id'].str.isdigit()) &
-                                     (df['id'].str.len() == communeId_lenght)]
+                                     (df['id'].str.len() == gVAR.communeId_lenght)]
                 
                 for _, commune_row in commune_rows.iterrows():
-                    # Set parent_ID for communes
-                   Hierarcy_df = assign_data(Hierarcy_df, commune_row['id'], province_id, commune_row['nome'],  commune_row['name'])
-    return Hierarcy_df
+                    # compile Hierarcy_data with the provinces
+                    hierarchy_data.append({
+                        'id': commune_row['id'],
+                        'parent_id': province_id,
+                        'nome': commune_row['nome'],
+                        'name': commune_row['name']
+                    })
+    return pd.DataFrame(hierarchy_data)
 
 
-def filter(maxFilter:int=maxFilter)-> tuple [list[str],pd.DataFrame]:
+def filter(maxFilter:int = gVAR.max_num_filter)-> tuple [list[str],pd.DataFrame]:
     """
-    Arg:
-        maxFilter (int): Maximum number of filters for a single REST request (default: 34).
-
+    Processes geographic hierarchy data and creates filter strings for REST API requests.
+    This function divides all geographic IDs into chunks to prevent exceeding API request limits.
+    
+    Args:
+        maxFilter (int): Maximum number of IDs to include in a single filter string
+                        (default: value from global_VAR.max_num_filter)
+    
     Returns:
-        list[str]: A list of strings, each containing concatenated IDs in the format:
-                   "i1+i2+...+in", "in1+in2+...+i2n", suitable for REST requests.
+        tuple: Contains:
+            - list[str]: Filter strings, each containing concatenated IDs in the format "id1+id2+...+idN"
+            - pd.DataFrame: The complete geographic hierarchy data
+    
+    Raises:
+        ValueError: If the processed DataFrame doesn't contain an 'id' column
     """
+
     dfCodelist = process_geographic_hierarchy()
 
     if "id" not in dfCodelist.columns:
@@ -96,18 +109,23 @@ def filter(maxFilter:int=maxFilter)-> tuple [list[str],pd.DataFrame]:
         i+= maxFilter
     return filters, dfCodelist
 
-def get_filter_for_dataflow(dataflow:str, filters:list[str]=filter()) -> list[str]:
+def get_filter_for_dataflow(dataflow:str, filters:list[str]) -> list[str]:
     """
+    Formats filter strings based on specific dataflow requirements.
+    Different dataflows require different formatting of the filter strings.
+    This function applies the appropriate formatting based on the dataflow ID.
+    
     Args:
-        dataflow (str): The dataflow identifier.
+        dataflow (str): The dataflow identifier (e.g., "122_54", "68_357", "161_268")
         filters (list[str]): A list of filter strings, each containing concatenated IDs
-                             in the format "i1+i2+...+in", suitable for REST requests.
-
+                        (it should be the output from the filter() function)
+    
     Returns:
-        list[str]: A list of formatted strings specific to the '122_54' dataflow,
-                   where each string is wrapped with additional characters for the request.
+        list[str]: A list of formatted filter strings specific to the requested dataflow
+    
+    Raises:
+        ValueError: If an unknown dataflow ID is provided
     """
-
     FilterString:list[str] = []
     
     if dataflow == "122_54":
