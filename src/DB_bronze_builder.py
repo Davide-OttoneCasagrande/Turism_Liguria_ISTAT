@@ -47,6 +47,9 @@ def save_to_db(df: pd.DataFrame, table_name: str, intIndex: bool=True) -> None:
         print(f"Data successfully saved to {table_name}")
     except Exception as e:
         print(f"Error saving to database: {e}")
+        if conn:
+            conn.rollback()
+        raise
     finally:
         conn.close()
 
@@ -121,11 +124,5 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]:
     structure = db_insert_dim(datastructureID, ignoreCL)
     print(structure[1])
     ignoreCL = structure[0]
-    
+    print(f"{tableName} star schema created")
     return ignoreCL
-
-if __name__ == "__main__":
-    ignoreCL: list[str] = []
-    for dataflow in gVAR.dataflows:
-        ignoreCL = db_star_schema(dataflow, ignoreCL)
-    print("star schema created")

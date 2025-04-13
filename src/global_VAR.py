@@ -11,3 +11,5 @@ dataflows = [
     ('122_54',"DCSC_TUR","facts_turism_raw"),
     ("161_268","DCSP_SBSREG","facts_indicatori_economici_raw")
 ]
+facts_FolderPath = "src\\SQL_script"
+dim_FolderPath = "src\\SQL_script\\dim_ITA"

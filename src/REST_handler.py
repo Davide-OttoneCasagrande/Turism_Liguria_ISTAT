@@ -39,7 +39,7 @@ def get_dataflow(dataflow:str, filters:list[str], timeframe:str) -> pd.DataFrame
                 print(f"Request failed code: {e}")
             else:
                 print(f"Request failed code: {e}")
-                raise RuntimeError(f"Request failed code: {e}")
+                raise
     
     if dfs:
         return pd.concat(dfs, ignore_index=True)

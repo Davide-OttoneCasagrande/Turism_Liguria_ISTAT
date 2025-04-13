@@ -2,7 +2,6 @@ import pandas as pd
 import global_VAR as gVAR
 import REST_handler as Rest_H
 
-
 def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, searchId: str = gVAR.searchId) -> pd.DataFrame:
     """
     Processes geographic data to create a hierarchical structure of regions, provinces, and communes.
@@ -74,7 +73,6 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
                         'name': commune_row['name']
                     })
     return pd.DataFrame(hierarchy_data)
-
 
 def filter(maxFilter:int = gVAR.max_num_filter)-> tuple [list[str],pd.DataFrame]:
     """
