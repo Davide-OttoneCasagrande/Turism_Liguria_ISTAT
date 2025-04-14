@@ -137,7 +137,7 @@ def db_insert_dim(log, datastructureID: str, ignoreCL: list[str]=None) -> tuple:
     if ignoreCL is None:
         ignoreCL = []
     structure = RestH.get_dataStructure(log, datastructureID)
-    for row in structure.iterrows():
+    for i, row in structure.iterrows():
         codelist = row['codeList'].upper()
         if codelist not in ignoreCL:
             df_dimension = RestH.get_codelist(log, codelist)              
