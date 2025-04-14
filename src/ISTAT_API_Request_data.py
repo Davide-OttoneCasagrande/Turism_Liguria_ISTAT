@@ -25,7 +25,7 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
     hierarchy_data = []
     
     # Step 1: Process regions
-    region_rows = df.loc[(df['id'].str.len() == gVAR.regionId_Length) & 
+    region_rows = df.loc[(df['id'].str.len() == gVAR.ID_lengths["region"]) & 
                          (df['id'].str.startswith(searchId))]
     for _, region_row in region_rows.iterrows():
         region_id:str = region_row['id']
@@ -38,7 +38,7 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
         })
 
         # Step 2: Process provinces
-        province_rows = df.loc[(df['id'].str.len() == gVAR.provinceId_length) & 
+        province_rows = df.loc[(df['id'].str.len() == gVAR.ID_lengths["province"]) & 
                               (df['id'].str.startswith(region_id))]        
         for _, province_row in province_rows.iterrows():
             province_id = province_row['id']
@@ -55,14 +55,14 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
             # Find a commune that belongs to this province to get its code
             sample_communes = df.loc[(df['nome'] == province_IT_name) & 
                                     (df['id'].str.isdigit()) & 
-                                    (df['id'].str.len() == gVAR.communeId_lenght)]
+                                    (df['id'].str.len() == gVAR.ID_lengths["commune"])]
             if not sample_communes.empty:
                 # Get the first 3 digits of the commune code
                 province_code = sample_communes.iloc[0]['id'][:3]
                 # Find all communes with this province code
                 commune_rows = df.loc[df['id'].str.startswith(province_code) & 
                                      (df['id'].str.isdigit()) &
-                                     (df['id'].str.len() == gVAR.communeId_lenght)]
+                                     (df['id'].str.len() == gVAR.ID_lengths["commune"])]
                 
                 for _, commune_row in commune_rows.iterrows():
                     # compile Hierarcy_data with the provinces

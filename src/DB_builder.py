@@ -1,10 +1,10 @@
+import os
 import pandas as pd
 import psycopg2
 import REST_handler as RestH
 import global_VAR as gVAR
 import ISTAT_API_Request_data as ISTAT_var
 from dotenv import load_dotenv
-from os import getenv
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ def connection_string() -> str:
     Returns:
         str: Formatted PostgreSQL connection string.
     """
-    return f"postgresql://{getenv('User')}:{getenv('password')}@{getenv('host')}:{getenv('port')}/{getenv('database')}"
+    return f"postgresql://{os.getenv('User')}:{os.getenv('password')}@{os.getenv('host')}:{os.getenv('port')}/{os.getenv('database')}"
 
 def get_db_connection() -> psycopg2.extensions.connection:
     """
@@ -25,12 +25,55 @@ def get_db_connection() -> psycopg2.extensions.connection:
         psycopg2.extensions.connection: PostgreSQL database connection object.
     """
     return psycopg2.connect(
-        dbname=getenv('database'),
-        user=getenv('User'),
-        password=getenv('password'),
-        host=getenv('host'),
-        port=getenv('port')
+        dbname=os.getenv('database'),
+        user=os.getenv('User'),
+        password=os.getenv('password'),
+        host=os.getenv('host'),
+        port=os.getenv('port')
     )
+
+def execute_sql_query(sql_query: str) -> None:
+    """
+    Execute SQL query that delete, creates or replaces views.
+   
+    Args:
+        sql_query (str): SQL statement for deleting/creating/replacing views.
+    """
+    print(f"Executing sql query...\n{sql_query[:100]}...")  # Print just first 100 chars for brevity
+    conn = None
+    cursor = None
+   
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql_query)
+        conn.commit()
+        print("query successfully executed")
+            
+    except Exception as e:
+        print(f"Database error: {e}")
+        if conn:
+            conn.rollback()
+        raise  
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+def sql_query_from_file(sql_filepath: str) -> None:
+    """
+    Execute SQL script from file to delete, create or replace views
+    
+    Args:
+        sql_filepath (str): the path to the SQL script file
+    """
+    if not os.path.exists(sql_filepath):
+        print(f"Folder not found: {sql_filepath}")
+        return
+    with open(sql_filepath, 'r') as file:
+        sql_query = file.read()
+    execute_sql_query(sql_query)
 
 def save_to_db(df: pd.DataFrame, table_name: str, intIndex: bool=True) -> None:
     """
@@ -126,3 +169,27 @@ def db_star_schema(dataflow: tuple, ignoreCL: list = None) -> list[str]:
     ignoreCL = structure[0]
     print(f"{tableName} star schema created")
     return ignoreCL
+
+
+def process_sql_files(folder_path: str) -> None:
+    """
+    Process all SQL files in a given folder to create or replace views
+    
+    Args:
+        folder_path (str): Path to the folder containing SQL files
+
+    Raises:
+        Exception: If any database error occurs during execution
+    """        
+    sql_files = [f for f in os.listdir(folder_path) if f.endswith('.sql')]
+    
+    if not sql_files:
+        print(f"No SQL files found in {folder_path}")
+        return
+        
+    print(f"Found {len(sql_files)} SQL files to process")
+    
+    for sql_file in sql_files:
+        file_path = os.path.join(folder_path, sql_file)
+        print(f"\nExecuting file: {sql_file}")
+        sql_query_from_file(file_path)
