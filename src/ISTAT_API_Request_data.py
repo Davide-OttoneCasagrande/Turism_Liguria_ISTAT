@@ -2,7 +2,7 @@ import pandas as pd
 import global_VAR as gVAR
 import REST_handler as Rest_H
 
-def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, searchId: str = gVAR.searchId) -> pd.DataFrame:
+def process_geographic_hierarchy(log, CodelistName:str = gVAR.originFilterSTR, searchId: str = gVAR.searchId) -> pd.DataFrame:
     """
     Processes geographic data to create a hierarchical structure of regions, provinces, and communes.
     Uses a REST API to fetch geographic data and organizes it into a hierarchy where:
@@ -11,6 +11,7 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
     - Communes belong to provinces
     
     Args:
+        log (logging.Logger): Logger instance used for logging errors.
         CodelistName (str): The name of the codelist to retrieve from the REST API
                         (default: value from global_VAR.originFilterSTR)
         searchId (str): The ID prefix to filter regions by 
@@ -21,7 +22,7 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
                     'id', 'parent_id', 'nome' (Italian name), and 'name' (English name)
     """
 
-    df = Rest_H.get_codelist(CodelistName)
+    df = Rest_H.get_codelist(log, CodelistName)
     hierarchy_data = []
     
     # Step 1: Process regions
@@ -74,12 +75,13 @@ def process_geographic_hierarchy(CodelistName:str = gVAR.originFilterSTR, search
                     })
     return pd.DataFrame(hierarchy_data)
 
-def filter(maxFilter:int = gVAR.max_num_filter)-> tuple [list[str],pd.DataFrame]:
+def filter(log, maxFilter:int = gVAR.max_num_filter)-> tuple [list[str],pd.DataFrame]:
     """
     Processes geographic hierarchy data and creates filter strings for REST API requests.
     This function divides all geographic IDs into chunks to prevent exceeding API request limits.
     
     Args:
+        log (logging.Logger): Logger instance used for logging errors.
         maxFilter (int): Maximum number of IDs to include in a single filter string
                         (default: value from global_VAR.max_num_filter)
     
@@ -92,7 +94,7 @@ def filter(maxFilter:int = gVAR.max_num_filter)-> tuple [list[str],pd.DataFrame]
         ValueError: If the processed DataFrame doesn't contain an 'id' column
     """
 
-    dfCodelist = process_geographic_hierarchy()
+    dfCodelist = process_geographic_hierarchy(log)
 
     if "id" not in dfCodelist.columns:
             raise ValueError("DataFrame must contain an 'id' column.")

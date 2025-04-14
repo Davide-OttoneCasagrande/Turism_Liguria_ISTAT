@@ -1,9 +1,10 @@
+import os
 import sys
+import log_handler as log
 import global_VAR as gVAR
 import DB_builder as DB_b
-import os
 
-def validate_folder_path(folder_path: dict[str, str]) -> str:
+def validate_folder_path(log, folder_path: dict[str, str]) -> str:
     """
     Validates that the provided folder path exists on the filesystem.
 
@@ -11,6 +12,7 @@ def validate_folder_path(folder_path: dict[str, str]) -> str:
     If it does not exist, a FileNotFoundError is raised, providing details about the folder.
 
     Args:
+        log (logging.Logger): Logger instance used for logging errors.
         folder_path (dict[str, str]): A dictionary with keys 'root', 'path', and 'name' representing the folder structure.
 
     Returns:
@@ -22,20 +24,21 @@ def validate_folder_path(folder_path: dict[str, str]) -> str:
     path = os.path.join(folder_path["root"], folder_path["path"])
     full_path = os.path.join(path, folder_path["name"])
     if not os.path.exists(full_path):
+        log.error(f"The folder '{folder_path['name']}' at path '{path}' does not exist.")
         raise FileNotFoundError(f"The folder '{folder_path['name']}' at path '{path}' does not exist.")
     return full_path
 
 def main() -> None:
     """
-    Main function to create and populate the bronze and silver database layers.
+    Main function to create and populate the first and second database layers.
     
     This function orchestrates the entire ETL process by:
-    1. Creating the bronze database tables using star schema design for each dataflow
-    2. Processing SQL files to create views in the silver database layer:
+    1. Creating the first layer database tables using star schema design for each dataflow
+    2. Processing SQL files to create views in the second database layer:
        - Fact views that represent business processes
        - Dimension views that represent business entities
     
-    The function handles errors at both bronze and silver layers by terminating execution
+    The function handles errors at both first and second layers by terminating execution
     if any database error occurs during the process.
     
     Returns:
@@ -44,32 +47,37 @@ def main() -> None:
     Raises:
         SystemExit: If an error occurs during database creation or view processing
     """
+    logger = log.setup_logging()
+    logger.info("Starting database build process")
     ignoreCL: list[str] = []
     try:
-        # Create bronze DB
-        sql_script_path = validate_folder_path(gVAR.drop_script_path)
-        DB_b.sql_query_from_file(sql_script_path)
+     # Create first layer DB
+        logger.info(f"Creating first DB layer for {len(gVAR.dataflows)} dataflows")
+        sql_script_path = validate_folder_path(logger, gVAR.drop_script_path)
+        DB_b.sql_query_from_file(logger, sql_script_path)
         for dataflow in gVAR.dataflows:
-            ignoreCL = DB_b.db_star_schema(dataflow, ignoreCL)
-        print("Bronze DB created")
+            logger.info(f"Processing dataflow: {dataflow}")
+            ignoreCL = DB_b.db_star_schema(logger, dataflow, ignoreCL)
+        logger.info("First DB layer created successfully")
         
-        # Create silver DB
+     # Create second layer DB
         # Process fact views
-        print("\n=== Processing fact views ===")
-        sql_script_path = validate_folder_path(gVAR.facts_FolderPath)
-        DB_b.process_sql_files(sql_script_path)
-        
+        logger.info("Creating second DB layer")
+        logger.info("\n=== Processing fact views ===")
+        sql_script_path = validate_folder_path(logger, gVAR.facts_FolderPath)
+        DB_b.process_sql_files(logger, sql_script_path)
+        logger.info("Fact views processed successfully")
+
         # Process dimension views
-        print("\n=== Processing dimension views ===")
-        sql_script_path = validate_folder_path(gVAR.dim_FolderPath)
-        DB_b.process_sql_files(sql_script_path)
-        
-        print("\nAll view creation scripts processed successfully")
-        print("\nDatabase successfully compiled")
+        logger.info("\n=== Processing dimension views ===")
+        sql_script_path = validate_folder_path(logger, gVAR.dim_FolderPath)
+        DB_b.process_sql_files(logger, sql_script_path)
+        logger.info("Dimension views processed successfully")
+
+        logger.info("Database build completed successfully")
         
     except Exception as e:
-        print(f"\n!!! FATAL ERROR: Script execution terminated !!!")
-        print(f"Error details: {e}")
+        logger.error(f"FATAL ERROR: {str(e)}", exc_info=True)
         sys.exit(1)  # Exit with error code
 
 if __name__ == "__main__":

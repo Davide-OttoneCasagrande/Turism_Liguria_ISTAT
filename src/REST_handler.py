@@ -5,11 +5,12 @@ import xml.etree.ElementTree as ET
 from dotenv import load_dotenv
 load_dotenv()
 
-def get_dataflow(dataflow:str, filters:list[str], timeframe:str) -> pd.DataFrame:
+def get_dataflow(log, dataflow:str, filters:list[str], timeframe:str) -> pd.DataFrame:
     """
     Fetch data from the ISTAT API.
 
     Args:
+        log (logging.Logger): Logger instance used for logging errors.
         dataflow (str): The dataflow identifier.
         filters (list[str]): List of filter identifiers to apply to the request.
         timeframe (str): The timeframe for the request.
@@ -18,13 +19,12 @@ def get_dataflow(dataflow:str, filters:list[str], timeframe:str) -> pd.DataFrame
         pd.DataFrame: A DataFrame containing the fetched data.
 
     Raises:
-        RuntimeError: If the HTTP request fails with a status code other than 404.
         ValueError: If no data is returned from the API.
     """
      
     dfs = []
 
-    print(f"downloading dataflow: {dataflow}")
+    log.info(f"downloading dataflow: {dataflow}")
 
     for filterID in filters:
         url =  f'https://esploradati.istat.it/SDMXWS/rest/data/{dataflow}/{filterID}?{timeframe}'
@@ -32,26 +32,34 @@ def get_dataflow(dataflow:str, filters:list[str], timeframe:str) -> pd.DataFrame
         try:
             response = req.get(url, headers=headerCSV)
             response.raise_for_status()
+            if not "text/csv" in response.headers.get('Content-Type', ''):
+                log.error(f"Unexpected content type for URL: {url}")
+                raise ValueError(f"Expected CSV data but received: {response.headers.get('Content-Type', '')}")
             df= pd.read_csv(io.StringIO(response.text))
-            dfs.append(df)
+            if df.empty:
+                log.warning(f"No data found for filterID: {filterID} at {url}")
+            else:
+                dfs.append(df)
         except req.exceptions.HTTPError as e:
             if response.status_code == 404:
-                print(f"Request failed code: {e}")
+                log.info(f"Request failed code: {e}")
             else:
-                print(f"Request failed code: {e}")
+                log.error(f"Request failed code: {e}")
                 raise
     
     if dfs:
         return pd.concat(dfs, ignore_index=True)
     else:
+        log.error("No data returned from the API.")
         raise ValueError("No data returned from the API.")
 
 
-def get_codelist(codeListName: str) -> pd.DataFrame:
+def get_codelist(log, codeListName: str) -> pd.DataFrame:
     """
     Fetch the codelist from the ISTAT API.
 
     Args:
+        log (logging.Logger): Logger instance used for logging errors.
         codeListName (str): The codelist identifier.
 
     Returns:
@@ -60,12 +68,11 @@ def get_codelist(codeListName: str) -> pd.DataFrame:
             - name: code names in English
             - nome: code names in Italian
 
-    Notes:
-        If an error occurs during the request, an empty DataFrame with the expected columns is returned.
+
     """
     url = f'https://esploradati.istat.it/SDMXWS/rest/codelist/IT1/{codeListName}'
 
-    print(f"downloading codelist: {codeListName}")
+    log.info(f"downloading codelist: {codeListName}")
     try:
         codeList_Response = req.get(url, timeout=20)
         codeList_Response.raise_for_status()
@@ -108,15 +115,16 @@ def get_codelist(codeListName: str) -> pd.DataFrame:
         return codelist_df
         
     except req.exceptions.RequestException as e:
-        print(f"Error retrieving codelist: {e}")
-        return pd.DataFrame(columns=['id', 'name', 'nome'])
+        log.error(f"Error retrieving codelist {codeListName}: {e}")
+        raise
 
 
-def get_dataStructure(dataflowID:str) -> pd.DataFrame:
+def get_dataStructure(log, dataflowID:str) -> pd.DataFrame:
     """
     Fetch and parse the data structure for a given dataflow ID from the ISTAT SDMX web service.
 
     Args:
+        log (logging.Logger): Logger instance used for logging errors.
         dataflowID (str): The identifier of the dataflow for which the data structure is to be retrieved.
 
     Returns:
@@ -137,7 +145,7 @@ def get_dataStructure(dataflowID:str) -> pd.DataFrame:
         0    DIM1    CL_DIM1
         1    DIM2    CL_DIM2
     """
-    print(f"downloading datastructure: {dataflowID}")
+    log.info(f"downloading datastructure: {dataflowID}")
     url:str = f'https://esploradati.istat.it/SDMXWS/rest/datastructure/IT1/{dataflowID}'
 
     try:
@@ -169,8 +177,8 @@ def get_dataStructure(dataflowID:str) -> pd.DataFrame:
           
         return structure
     except Exception as e:
-        print(f"Error retrieving data structure: {e}")
-        return pd.DataFrame(columns=['columns', 'codeList'])
+        log.error(f"Error retrieving data structure: {e}")
+        raise
 
 
 if __name__ == '__main__':
